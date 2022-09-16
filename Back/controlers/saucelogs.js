@@ -12,7 +12,7 @@ exports.getAll = (req, res) => {   //1
 exports.getOne = (req, res) => { //3
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => res.status(200).json(sauce))
-        .catch(error => res.status(500).json(error ));
+        .catch(error => res.status(500).json(error));
 }
 
 // Create Sauce (one)
@@ -31,7 +31,7 @@ exports.create = (req, res) => { //2
     sauce.save()
         .then(() => res.status(201).json({ message: 'Sauce enregistrée !' }))
         .catch(error => res.status(500).json(error));
-} 
+}
 
 // Modify content of sauce
 exports.modify = (req, res) => { //4
@@ -50,7 +50,7 @@ exports.modify = (req, res) => { //4
                         .catch(error => res.status(500).json(error));
                 })
             })
-            .catch(error => res.status(500).json(error ));
+            .catch(error => res.status(500).json(error));
     } else {
         const sauceObject = { ...req.body };
         Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
@@ -85,14 +85,14 @@ exports.delete = (req, res) => { //5
 exports.likedislike = (req, res) => { //6
     switch (req.body) {
 
-            // If liked : 
+        // If liked : 
         case 1:
             Sauce.updateOne({ _id: req.params.id }, { $addToSet: { usersLiked: req.body.userId }, $inc: { likes: 1 } })
                 .then(() => res.status(200).json({ message: 'Like ajouté !' }))
                 .catch((error) => res.status(500).json(error))
             break;
 
-            // If default = 0 :
+        // If default = 0 :
         case 0:
             Sauce.findOne({ _id: req.params.id })
                 .then((sauce) => {
@@ -110,7 +110,7 @@ exports.likedislike = (req, res) => { //6
                 .catch(error => res.status(500).json(error))
             break;
 
-            // If Disliked :
+        // If Disliked :
         case -1:
             Sauce.updateOne({ _id: req.params.id }, { $addToSet: { usersDisliked: req.body.userId }, $inc: { dislikes: 1 } })
                 .then(() => { res.status(200).json({ message: 'Dislike ajouté !' }) })
@@ -118,6 +118,6 @@ exports.likedislike = (req, res) => { //6
             break;
 
         default:
-            return res.status(400).json({message: "Unknown like dislike value"})
+            return res.status(400).json({ message: "Unknown like dislike value" })
     }
 };

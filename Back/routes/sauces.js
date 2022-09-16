@@ -1,8 +1,8 @@
 // imports modules 
 const express = require("express");
 const saucesControler = require("../controlers/saucelogs");
-const checkToken = require('../middleware/checkToken')
-const multer = require('../middleware/multer-config')
+const checkToken = require('../middleware/checkToken');
+const multer = require('../middleware/multer-config');
 
 // récupération des routes
 let router = express.Router();

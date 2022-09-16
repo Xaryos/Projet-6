@@ -17,9 +17,9 @@ exports.signup = (req, res) => {
             });
             user.save()
                 .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-                .catch(error => res.status(500).json(error ));
+                .catch(error => res.status(500).json(error));
         })
-        .catch(error => res.status(500).json( error ));
+        .catch(error => res.status(500).json(error));
 };
 
 // Login to BDD
@@ -40,5 +40,5 @@ exports.login = (req, res) => {
                 })
                 .catch(error => res.status(501).json(error));
         })
-        .catch(error => res.status(500).json( error ));
+        .catch(error => res.status(500).json(error));
 };
