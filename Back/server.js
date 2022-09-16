@@ -32,7 +32,7 @@ app.use('/api/auth', usersRouter);
 
 app.use('/api/sauces', saucesRouter);
 
-app.get('*', (req, res) => res.status(501).send("Error server catch please fix it"));
+app.all('*', (req, res) => res.status(501).send("Error server catch please fix it"));
 
 
 // test DB START

@@ -1,23 +1,25 @@
 // imports modules 
 const express = require("express");
-const saucesControler = require("../controlers/saucelogs.js");
+const saucesControler = require("../controlers/saucelogs");
+const checkToken = require('../middleware/checkToken')
+const multer = require('../middleware/multer-config')
 
 // récupération des routes
 let router = express.Router();
 
 // import sauces
 
-router.get('', saucesControler.getAll);
+router.get('', checkToken, saucesControler.getAll);
 
-router.get('/:id', saucesControler.getOne);
+router.get('/:id', checkToken, saucesControler.getOne);
 
-router.post('', saucesControler.create);
+router.post('', checkToken, multer, saucesControler.create);
 
-router.put('/:id', saucesControler.modify);
+router.put('/:id', checkToken, multer, saucesControler.modify);
 
-router.delete('/:id', saucesControler.delete);
+router.delete('/:id', checkToken, saucesControler.delete);
 
-router.post('/:id/like', saucesControler.likedislike);
+router.post('/:id/like', checkToken, saucesControler.likedislike);
 
 // export
 module.exports = router;
