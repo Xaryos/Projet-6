@@ -19,7 +19,7 @@ router.put('/:id', checkToken, multer, saucesControler.modify);
 
 router.delete('/:id', checkToken, saucesControler.delete);
 
-router.post('/:id/like', checkToken, saucesControler.likedislike);
+router.post('/:id/like', checkToken, saucesControler.likeDislike);
 
 // export
 module.exports = router;

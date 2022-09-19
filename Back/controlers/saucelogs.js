@@ -1,5 +1,7 @@
 // importation des module
 const Sauce = require("../models/sauce")
+const fs = require("fs")
+
 
 //  Get all sauces
 exports.getAll = (req, res) => {   //1   
@@ -17,11 +19,11 @@ exports.getOne = (req, res) => { //3
 
 // Create Sauce (one)
 exports.create = (req, res) => { //2
+    console.log(req.body)
     const sauceObject = JSON.parse(req.body.sauce);
-    delete sauceObject.userId;
 
     const sauce = new Sauce({
-        userId: req.auth.userId,
+        ...sauceObject,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
         likes: 0,
         dislikes: 0,
@@ -40,7 +42,7 @@ exports.modify = (req, res) => { //4
             .then(sauce => {
                 // suppression de l'ancienne image
                 const filename = sauce.imageUrl.split('/images/')[1];
-                FileSystem.unlink(`images/${filename}`, () => {
+                fs.unlink(`images/${filename}`, () => {
                     const sauceObject = {
                         ...JSON.parse(req.body.sauce),
                         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -61,10 +63,11 @@ exports.modify = (req, res) => { //4
 
 // Delete one sauce
 exports.delete = (req, res) => { //5
+    console.log(req.params)
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
             // If error in process delete
-            if (sauce.userId != req.auth.userId) {
+            if (sauce.userId != req.userId) {
                 res.status(401).json({ message: 'Suppression impossible : Non autorisation' })
             } else {
                 // If no error caught
@@ -73,6 +76,7 @@ exports.delete = (req, res) => { //5
                     Sauce.deleteOne({ _id: req.params.id })
                         .then(() => { res.status(200).json({ message: 'Sauce supprimée !' }) })
                         .catch(error => res.status(500).json(error));
+
                 });
             }
         })
@@ -82,11 +86,13 @@ exports.delete = (req, res) => { //5
 }
 
 // Like dislike display
-exports.likedislike = (req, res) => { //6
+exports.likeDislike = (req, res) => { //6
+    console.log(req.body)
     switch (req.body) {
 
         // If liked : 
         case 1:
+            console.log("test1")
             Sauce.updateOne({ _id: req.params.id }, { $addToSet: { usersLiked: req.body.userId }, $inc: { likes: 1 } })
                 .then(() => res.status(200).json({ message: 'Like ajouté !' }))
                 .catch((error) => res.status(500).json(error))
@@ -94,6 +100,7 @@ exports.likedislike = (req, res) => { //6
 
         // If default = 0 :
         case 0:
+            console.log("test2")
             Sauce.findOne({ _id: req.params.id })
                 .then((sauce) => {
                     if (sauce.usersLiked.includes(req.body.userId)) {
@@ -112,12 +119,14 @@ exports.likedislike = (req, res) => { //6
 
         // If Disliked :
         case -1:
+            console.log("test3")
             Sauce.updateOne({ _id: req.params.id }, { $addToSet: { usersDisliked: req.body.userId }, $inc: { dislikes: 1 } })
                 .then(() => { res.status(200).json({ message: 'Dislike ajouté !' }) })
                 .catch((error) => res.status(500).json(error))
             break;
 
         default:
+            console.log("bad test")
             return res.status(400).json({ message: "Unknown like dislike value" })
     }
 };
