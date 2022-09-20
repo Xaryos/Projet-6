@@ -87,12 +87,10 @@ exports.delete = (req, res) => { //5
 
 // Like dislike display
 exports.likeDislike = (req, res) => { //6
-    console.log(req.body)
-    switch (req.body) {
+    switch (req.body.like) {
 
         // If liked : 
         case 1:
-            console.log("test1")
             Sauce.updateOne({ _id: req.params.id }, { $addToSet: { usersLiked: req.body.userId }, $inc: { likes: 1 } })
                 .then(() => res.status(200).json({ message: 'Like ajouté !' }))
                 .catch((error) => res.status(500).json(error))
@@ -100,7 +98,6 @@ exports.likeDislike = (req, res) => { //6
 
         // If default = 0 :
         case 0:
-            console.log("test2")
             Sauce.findOne({ _id: req.params.id })
                 .then((sauce) => {
                     if (sauce.usersLiked.includes(req.body.userId)) {
@@ -119,7 +116,6 @@ exports.likeDislike = (req, res) => { //6
 
         // If Disliked :
         case -1:
-            console.log("test3")
             Sauce.updateOne({ _id: req.params.id }, { $addToSet: { usersDisliked: req.body.userId }, $inc: { dislikes: 1 } })
                 .then(() => { res.status(200).json({ message: 'Dislike ajouté !' }) })
                 .catch((error) => res.status(500).json(error))
